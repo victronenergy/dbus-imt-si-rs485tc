@@ -53,8 +53,3 @@ SETTINGS = {
 	'/WindSpeed':           ['/Settings/Meteo/TTY/HasWindSpeedSensor',           0,   0,  1],
 	'/ExternalTemperature': ['/Settings/Meteo/TTY/HasExternalTemperatureSensor', 0,   0,  1]
 }
-
-
-
-
-
