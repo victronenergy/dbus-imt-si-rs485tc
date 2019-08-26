@@ -68,16 +68,6 @@ class VeDbusServiceAsync(VeDbusService):
 
 	def __setitem__(self, dbus_path, new_value):
 
-		# Only send zero values if we have seen non-zero values before.
-		# This is because the sensor reports zero for subsensors which are not present
-		# /WindSpeed and /ExternalTemperature are optional
-		# Rather than sending fake zeroes, which might be interpreted as real values
-		# we keep the default value 'None'
-
-		if new_value == 0 and self.base.__getitem__(dbus_path) is None:
-			_log.debug('ignoring zero value for ' + dbus_path)
-			return
-
 		# Make sure VeDbusService.__setitem__ is always called from the same thread.
 		# This is achieved by scheduling it on the gobject mainloop, which is single-threaded.
 		# This avoids the need for locking.

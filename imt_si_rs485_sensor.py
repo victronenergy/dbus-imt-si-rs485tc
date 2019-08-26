@@ -47,7 +47,14 @@ class ImtSiRs485Sensor(object):
 			request = FirmwareVersionModbusRequest(unit=c.SLAVE_ADDRESS)
 			response = self.serial.execute(request)
 
-			return response.hardware_version, response.firmware_version
+			hw_ver = response.hardware_version
+			fw_ver = response.firmware_version
+
+			_log.info('found IMT SI-RS485 sensor')
+			_log.info('hardware version: ' + str(hw_ver))
+			_log.info('firmware version: ' + str(fw_ver))
+
+			return hw_ver, fw_ver
 
 		except Exception:
 			msg = 'no IMT SI-RS485 sensor found'

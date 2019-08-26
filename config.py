@@ -29,7 +29,7 @@ MODE = 'rtu'
 SIGNALS = [
 
 	DbusSignal('/Mgmt/ProcessName',    DRIVER_NAME),
-	DbusSignal('/Mgmt/ProcessVersion', '1.0.2'),
+	DbusSignal('/Mgmt/ProcessVersion', '1.1.0'),
 	DbusSignal('/Mgmt/Connection',     'Modbus RTU'),
 	DbusSignal('/DeviceInstance',      1),
 	DbusSignal('/ProductId', 		   0xB030),
@@ -42,6 +42,17 @@ SIGNALS = [
 	ModbusSignal('/ExternalTemperature', register=8, gain=0.1, unit=u'°C')
 ]
 
+
+# subsensor settings
+
+# keys must match with ModbusSignal's name above
+# TTY will be replaced with the tty of the device
+
+SETTINGS = {
+	# object_path             #settings_path                               #default #min #max
+	'/WindSpeed':           ['/Settings/Meteo/TTY/HasWindSpeedSensor',           0,   0,  1],
+	'/ExternalTemperature': ['/Settings/Meteo/TTY/HasExternalTemperatureSensor', 0,   0,  1]
+}
 
 
 

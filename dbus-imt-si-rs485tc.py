@@ -1,5 +1,6 @@
 #!/usr/bin/python -u
 # coding=utf-8
+from functools import partial
 from time import sleep
 from ve_dbus_service_async import VeDbusServiceAsync
 from imt_si_rs485_sensor import ImtSiRs485Sensor
@@ -10,13 +11,29 @@ import sys
 import config as c
 import logging
 
-log = logging.getLogger('main')
+from os.path import dirname, join
+from sys import path
+
+path.insert(1, join(dirname(__file__), 'ext', 'velib_python'))
+
+from settingsdevice import SettingsDevice
+
 logging.basicConfig(level=c.LOG_LEVEL)
+log = logging.getLogger('main')
 
 
 def print_usage():
 	print('Usage:   ' + __file__ + ' <serial device>')
 	print('Example: ' + __file__ + ' ttyUSB0')
+
+
+# noinspection PyShadowingBuiltins,PyShadowingNames
+def get_settings_for_tty(tty):
+	return {
+		name: [path.replace('TTY', tty), value, min, max]
+		for name, (path, value, min, max)
+		in c.SETTINGS.iteritems()
+	}
 
 
 def parse_cmdline_args():
@@ -31,6 +48,29 @@ def parse_cmdline_args():
 	return args[0]
 
 
+# noinspection PyProtectedMember
+def is_subsensor_present(subsensor_present_settings, dbus_path, value):
+	# type: (SettingsDevice, unicode, float) -> object
+
+	if dbus_path not in subsensor_present_settings._settings:
+		return True                                # it's not an optional subsensor
+
+	if subsensor_present_settings[dbus_path] == 1:
+		return True                               # subsensor is marked as present in the settings
+
+	if value == 0.0:
+		log.debug('ignoring zero value for subsensor ' + dbus_path)
+		return False
+
+	# got a non-zero value form subsensor.
+	# subsensor is definitely present, but not marked as present in the settings.
+	# update settings.
+
+	log.info('found subsensor ' + dbus_path + '. updating settings')
+	subsensor_present_settings[dbus_path] = 1
+	return True
+
+
 def main():
 
 	log.info('starting ' + c.DRIVER_NAME)
@@ -39,7 +79,6 @@ def main():
 	sensor = ImtSiRs485Sensor(tty)
 
 	hw_ver, fw_ver = sensor.identify()
-	log.info('found IMT SI-RS485 sensor')
 
 	# add hw and fw version to the signals, they are mandatory
 	signals = c.SIGNALS + [DbusSignal('/HardwareVersion', hw_ver), DbusSignal('/FirmwareVersion', fw_ver)]
@@ -49,6 +88,10 @@ def main():
 
 	# starting watchdog here, because with VeDbusServiceAsync we are going multi-threaded
 	with Watchdog(watchdog_timeout) as watchdog, VeDbusServiceAsync(service_name, signals) as dbus:
+
+		settings_for_tty = get_settings_for_tty(tty)
+		settings = SettingsDevice(dbus.dbusconn, settings_for_tty, None)
+		_is_subsensor_present = partial(is_subsensor_present, settings)
 
 		# only the modbus signals are updated, the others are const
 		modbus_signals = [s for s in signals if isinstance(s, ModbusSignal)]
@@ -60,9 +103,11 @@ def main():
 			registers = sensor.read_modbus_registers()
 
 			for s in modbus_signals:
-				dbus[s.dbus_path] = registers[s.reg_no] * s.gain
+				value = registers[s.reg_no] * s.gain
+				if _is_subsensor_present(s.dbus_path, value):
+					dbus[s.dbus_path] = value
 
-			log.debug('iteration finished, sleeping for ' + str(c.UPDATE_INTERVAL) + ' seconds')
+			log.debug('iteration completed, sleeping for ' + str(c.UPDATE_INTERVAL) + ' seconds')
 			sleep(c.UPDATE_INTERVAL)
 
 
