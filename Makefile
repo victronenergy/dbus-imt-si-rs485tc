@@ -15,7 +15,8 @@ FILES = \
 
 VEDLIB_FILES = \
 	$(VEDLIBDIR)/vedbus.py \
-	$(VEDLIBDIR)/ve_utils.py
+	$(VEDLIBDIR)/ve_utils.py \
+	$(VEDLIBDIR)/settingsdevice.py
 
 help:
 	@echo "The following make targets are available"
