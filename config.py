@@ -29,7 +29,7 @@ MODE = 'rtu'
 SIGNALS = [
 
 	DbusSignal('/Mgmt/ProcessName',    DRIVER_NAME),
-	DbusSignal('/Mgmt/ProcessVersion', '1.1.0'),
+	DbusSignal('/Mgmt/ProcessVersion', '1.1.1'),
 	DbusSignal('/Mgmt/Connection',     'Modbus RTU'),
 	DbusSignal('/DeviceInstance',      1),
 	DbusSignal('/ProductId', 		   0xB030),
