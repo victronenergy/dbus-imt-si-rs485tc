@@ -49,7 +49,6 @@ SIGNALS = [
 # TTY will be replaced with the tty of the device
 
 SETTINGS = {
-	# object_path             #settings_path                               #default #min #max
-	'/WindSpeed':           ['/Settings/Meteo/TTY/HasWindSpeedSensor',           0,   0,  1],
-	'/ExternalTemperature': ['/Settings/Meteo/TTY/HasExternalTemperatureSensor', 0,   0,  1]
+	'/WindSpeed':           ['/Settings/Meteo/TTY/WindSpeedSensor',           'auto-detect', 0, 0],
+	'/ExternalTemperature': ['/Settings/Meteo/TTY/ExternalTemperatureSensor', 'auto-detect', 0, 0]
 }

@@ -6,6 +6,8 @@
       <w>irradiance</w>
       <w>meteo</w>
       <w>modbus</w>
+      <w>subdevice</w>
+      <w>subsensor</w>
       <w>velib</w>
       <w>victronenergy</w>
     </words>

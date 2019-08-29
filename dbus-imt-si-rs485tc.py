@@ -49,14 +49,19 @@ def parse_cmdline_args():
 
 
 # noinspection PyProtectedMember
-def is_subsensor_present(subsensor_present_settings, dbus_path, value):
+def is_subsensor_present(subsensor_settings, dbus_path, value):
 	# type: (SettingsDevice, unicode, float) -> object
 
-	if dbus_path not in subsensor_present_settings._settings:
+	if dbus_path not in subsensor_settings._settings:
 		return True                                # it's not an optional subsensor
 
-	if subsensor_present_settings[dbus_path] == 1:
-		return True                               # subsensor is marked as present in the settings
+	if subsensor_settings[dbus_path] == 'enabled':
+		return True
+
+	if subsensor_settings[dbus_path] == 'disabled':
+		return False
+
+	# subsensor_settings is 'auto-detect'
 
 	if value == 0.0:
 		log.debug('ignoring zero value for subsensor ' + dbus_path)
@@ -67,7 +72,7 @@ def is_subsensor_present(subsensor_present_settings, dbus_path, value):
 	# update settings.
 
 	log.info('found subsensor ' + dbus_path + '. updating settings')
-	subsensor_present_settings[dbus_path] = 1
+	subsensor_settings[dbus_path] = 'enabled'
 	return True
 
 
