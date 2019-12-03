@@ -111,6 +111,8 @@ def main():
 				value = registers[s.reg_no] * s.gain
 				if _is_subsensor_present(s.dbus_path, value):
 					dbus[s.dbus_path] = value
+				else:
+					dbus[s.dbus_path] = None
 
 			log.debug('iteration completed, sleeping for ' + str(c.UPDATE_INTERVAL) + ' seconds')
 			sleep(c.UPDATE_INTERVAL)
