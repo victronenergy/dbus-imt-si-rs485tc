@@ -1,7 +1,7 @@
 from threading import Thread
 from time import sleep
 from os import _exit as kill
-from thread import interrupt_main as terminate
+from _thread import interrupt_main as terminate
 import logging
 _log = logging.getLogger(__name__)
 

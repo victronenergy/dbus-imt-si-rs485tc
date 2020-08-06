@@ -1,4 +1,4 @@
-#!/usr/bin/python -u
+#!/usr/bin/python3 -u
 # coding=utf-8
 from functools import partial
 from time import sleep
@@ -32,7 +32,7 @@ def get_settings_for_tty(tty):
 	return {
 		name: [path.replace('TTY', tty), value, min, max]
 		for name, (path, value, min, max)
-		in c.SETTINGS.iteritems()
+		in c.SETTINGS.items()
 	}
 
 
@@ -126,14 +126,14 @@ def main():
 try:
 	main()
 
-except Exception, e:
+except Exception as e:
 
-	log.error(e.message)
+	log.error(str(e))
 
 	# show stacktrace only in debug mode
 	if c.LOG_LEVEL <= logging.DEBUG:
 		ex = sys.exc_info()
-		raise ex[0], ex[1], ex[2]
+		raise ex[0](ex[1]).with_traceback(ex[2])
 
 finally:
 	log.info(c.DRIVER_NAME + ' has shut down')

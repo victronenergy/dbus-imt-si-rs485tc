@@ -64,7 +64,7 @@ class ImtSiRs485Sensor(object):
 			else:
 				_log.info(msg)
 				ex = exc_info()
-				raise ex[0], ex[1], ex[2]
+				raise ex[0](ex[1]).with_traceback(ex[2])
 
 		finally:
 			self.serial.close()  # close in any case
@@ -126,7 +126,7 @@ class FirmwareVersionModbusResponse(ModbusResponse):
 		self.firmware_version = None
 
 	def decode(self, data):
-		self.sub_function = struct.unpack('>b', data[0])
+		self.sub_function = struct.unpack('>b', data[0:1])
 		self.hardware_version = struct.unpack('>H', data[1:3])[0]/100.0
 		self.firmware_version = struct.unpack('>H', data[3:5])[0]/100.0
 

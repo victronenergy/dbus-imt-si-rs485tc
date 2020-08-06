@@ -1,5 +1,5 @@
 import threading
-import gobject
+from gi.repository import GLib
 import dbus
 
 from dbus.mainloop.glib import DBusGMainLoop
@@ -35,7 +35,7 @@ class VeDbusServiceAsync(VeDbusService):
 
 		self.base = super(VeDbusServiceAsync, self)
 		self.signals = signals
-		self.main_loop = gobject.MainLoop()  # the global, glib main loop
+		self.main_loop = GLib.MainLoop()  # the global, glib main loop
 		self.thread = threading.Thread(target=lambda *args: self.main_loop.run())
 
 		# this takes the global main_loop above and wraps it.
@@ -63,7 +63,6 @@ class VeDbusServiceAsync(VeDbusService):
 
 	# noinspection PyMethodMayBeStatic
 	def _init_threads(self):
-		gobject.threads_init()  # important!
 		dbus.mainloop.glib.threads_init()  # can be called multiple times without causing harm
 
 	def __setitem__(self, dbus_path, new_value):
@@ -78,7 +77,7 @@ class VeDbusServiceAsync(VeDbusService):
 			self.base.__setitem__(dbus_path, new_value)
 			return False  # = do not repeat this action
 
-		gobject.timeout_add(0, set_item)  # schedule ASAP on mainloop
+		GLib.timeout_add(0, set_item)  # schedule ASAP on mainloop
 
 	def start(self):
 		_log.debug('starting')
