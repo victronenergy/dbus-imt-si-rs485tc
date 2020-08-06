@@ -64,7 +64,7 @@ class ImtSiRs485Sensor(object):
 			else:
 				_log.info(msg)
 				ex = exc_info()
-				raise ex[0], ex[1], ex[2]
+				raise ex[0](ex[1]).with_traceback(ex[2])
 
 		finally:
 			self.serial.close()  # close in any case

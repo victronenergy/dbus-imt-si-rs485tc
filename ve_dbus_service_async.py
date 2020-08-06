@@ -1,5 +1,5 @@
 import threading
-import gobject
+from gi.repository import GObject as gobject
 import dbus
 
 from dbus.mainloop.glib import DBusGMainLoop
