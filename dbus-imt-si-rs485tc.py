@@ -108,7 +108,11 @@ def main():
 			registers = sensor.read_modbus_registers()
 
 			for s in modbus_signals:
-				value = registers[s.reg_no] * s.gain
+				value = registers[s.reg_no]
+				if s.signed and value & 0x8000:
+					value -= 0x10000
+				value *= s.gain
+
 				if _is_subsensor_present(s.dbus_path, value):
 					dbus[s.dbus_path] = value
 				else:

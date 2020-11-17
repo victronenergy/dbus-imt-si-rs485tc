@@ -38,8 +38,8 @@ SIGNALS = [
 
 	ModbusSignal('/Irradiance',          register=0, gain=0.1, unit=u'W/m2'),
 	ModbusSignal('/WindSpeed',           register=3, gain=0.1, unit=u'm/s'),
-	ModbusSignal('/CellTemperature',     register=7, gain=0.1, unit=u'°C'),
-	ModbusSignal('/ExternalTemperature', register=8, gain=0.1, unit=u'°C')
+	ModbusSignal('/CellTemperature',     register=7, gain=0.1, unit=u'°C', signed=True),
+	ModbusSignal('/ExternalTemperature', register=8, gain=0.1, unit=u'°C', signed=True)
 ]
 
 

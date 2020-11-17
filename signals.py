@@ -28,7 +28,7 @@ class DbusSignal(object):
 
 
 class ModbusSignal(DbusSignal):
-	def __init__(self, dbus_path, register, gain, unit=None):
+	def __init__(self, dbus_path, register, gain, unit=None, signed=False):
 		# type: (unicode, int, float, unicode) -> None
 		"""
 		:param dbus_path: unicode
@@ -47,6 +47,7 @@ class ModbusSignal(DbusSignal):
 		self.reg_no = register
 		self.gain = gain
 		self.unit = unit
+		self.signed = signed
 
 		def get_text(value):
 			return str(value) + ' ' + unit
