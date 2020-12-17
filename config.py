@@ -33,7 +33,7 @@ SIGNALS = [
 	DbusSignal('/Mgmt/Connection',     'Modbus RTU'),
 	DbusSignal('/DeviceInstance',      1),
 	DbusSignal('/ProductId', 		   0xB030),
-	DbusSignal('/ProductName',         'IMT Si-RS485 Series Solar Irradiance Sensor'),
+	DbusSignal('/ProductName',         'IMT Si-RS485 Irradiance Sensor'),
 	DbusSignal('/Connected',           True),
 
 	ModbusSignal('/Irradiance',          register=0, gain=0.1, unit=u'W/m2'),
